@@ -1,0 +1,10 @@
+'use client';
+
+import { FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function SignInPage() {
+  const router = useRouter(); const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const [error, setError] = useState(''); const [loading, setLoading] = useState(false);
+  async function submit(event: FormEvent) { event.preventDefault(); setLoading(true); setError(''); const response = await fetch('/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) }); const data = await response.json(); if (!response.ok) { setError(data.error ?? 'Unable to sign in.'); setLoading(false); return; } router.replace('/admin'); router.refresh(); }
+  return <main className="auth-page"><div className="auth-art"><div className="auth-mark">AZ</div><p className="eyebrow">Abebe Zeleke International Hotel</p><h1>The details that make a stay memorable.</h1><p>Staff operations console</p></div><div className="auth-panel"><div className="auth-form"><div className="auth-mobile-brand"><span className="auth-mark">AZ</span><strong>Abebe Zeleke</strong></div><p className="eyebrow">Staff access</p><h2>Welcome back.</h2><p className="auth-lede">Sign in to manage stays, rooms, and events.</p><form onSubmit={submit}><label>Email address<input type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@abebelezelekehotel.com" /></label><label>Password<input type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Enter your password" /></label>{error && <p className="form-error" role="alert">{error}</p>}<button className="primary-button auth-submit" disabled={loading}>{loading ? 'Signing in…' : 'Sign in to console'}</button></form><p className="auth-footnote">Access is restricted to authorized hotel staff.</p></div></div></main>;
+}
