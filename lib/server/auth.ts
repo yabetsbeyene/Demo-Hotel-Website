@@ -13,7 +13,7 @@ export type Admin = { id: string; email: string; fullName: string; role: AdminRo
 function tokenHash(token: string) { return createHash('sha256').update(token).digest('hex'); }
 
 export async function hashPassword(password: string) {
-  if (password.length < 12) throw new Error('Password must be at least 12 characters');
+  if (password.length < 8) throw new Error('Password must be at least 8 characters');
   const salt = randomBytes(16);
   const derived = await deriveKey(password, salt, 64, { N: 16384, r: 8, p: 1 });
   return `scrypt$16384$8$1$${salt.toString('base64url')}$${derived.toString('base64url')}`;

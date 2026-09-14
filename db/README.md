@@ -53,7 +53,8 @@ Then create the first staff account:
 npm run admin:create
 ```
 
-The password is hashed with Node's scrypt implementation. The dashboard is
+The password is hashed with Node's scrypt implementation. Passwords must be at
+least 8 characters. The dashboard is
 protected by an expiring, hashed session token; staff can manage bookings and
 meeting inquiries, while only `admin` users can edit room types or upload/delete
 gallery images.
