@@ -11,6 +11,14 @@ const paths: Record<string, React.ReactNode> = {
   trend: <><path d="m4 16 5-5 4 3 7-8" /><path d="M15 6h5v5" /></>,
   more: <><circle cx="5" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" /><circle cx="19" cy="12" r="1" fill="currentColor" stroke="none" /></>,
   plus: <><path d="M12 5v14M5 12h14" /></>
+  ,restaurant: <><path d="M7 3v8M4 3v5a3 3 0 0 0 6 0V3M7 11v10M17 3v18M17 3c2 2 3 4 3 7h-3" /></>,
+  car: <><path d="m5 16 1.5-6h11L19 16M4 16h16v4H4zM7 20v1M17 20v1M7 16h.01M17 16h.01" /></>,
+  'room-service': <><path d="M4 20h16M6 20v-8h12v8M9 12V8h6v4M12 8V4M9 4h6" /></>,
+  spa: <><path d="M12 21c0-7 3-11 8-14-1 8-4 12-8 14ZM12 21c0-5-2-9-7-12 0 7 3 11 7 12ZM12 21V9" /></>,
+  fitness: <><path d="M6 7v10M3 9v6M18 7v10M21 9v6M6 12h12" /></>,
+  laundry: <><circle cx="12" cy="13" r="4" /><path d="M4 5h16v15H4zM7 8h.01M10 8h.01" /></>,
+  pool: <><path d="M3 17c2 0 2 2 4 2s2-2 4-2 2 2 4 2 2-2 4-2 2 2 3 2M3 12c2 0 2 2 4 2s2-2 4-2 2 2 4 2 2-2 4-2 2 2 3 2M8 9V4h8v5M11 4v5M13 4v5" /></>
+  ,quote: <><path d="M6 17H3v-3c0-3.3 1.7-5.5 5-6.5M15 17h-3v-3c0-3.3 1.7-5.5 5-6.5" /></>
 };
 
 export function Icon({ name, size = 18 }: { name: string; size?: number }) {
