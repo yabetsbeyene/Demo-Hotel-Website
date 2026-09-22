@@ -17,7 +17,7 @@ export default function GalleryPage() {
     <div className="hotel-site gallery-page">
       <header className="hotel-nav">
         <Link className="hotel-brand" href="/client" aria-label="Abebe Zeleke Hotel home"><span className="hotel-brand-mark">AZ</span><span><strong>Abebe Zeleke</strong><small>International Hotel</small></span></Link>
-        <nav className="hotel-links" aria-label="Hotel navigation"><Link href="/client#rooms">Stay</Link><Link href="/client#experience">Experience</Link><Link href="/client#about">About</Link><Link className="active" href="/client/gallery">Gallery</Link></nav>
+        <nav className="hotel-links" aria-label="Hotel navigation"><Link href="/client">Home</Link><Link href="/client#rooms">Stay</Link><Link href="/client#experience">Experience</Link><Link href="/client#services">Services</Link><Link href="/client#about">About</Link><Link className="active" href="/client/gallery">Gallery</Link></nav>
         <Link className="hotel-nav-action" href="/client#rooms">Book a room <Icon name="arrow" size={15} /></Link>
       </header>
 

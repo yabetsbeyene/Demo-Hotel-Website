@@ -33,7 +33,9 @@
   color: var(--hotel-ink);
   font-size: 12px;
   text-transform: none;
-  transition: border-color .2s, box-shadow .2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .booking-form-grid input,
@@ -53,7 +55,7 @@
 .booking-form-grid select:focus,
 .booking-form-grid textarea:focus {
   border-color: var(--hotel-gold);
-  box-shadow: 0 0 0 3px rgba(189, 135, 80, .12);
+  box-shadow: 0 0 0 3px rgba(189, 135, 80, 0.12);
 }
 
 .booking-form-grid input::placeholder,

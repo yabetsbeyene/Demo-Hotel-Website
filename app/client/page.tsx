@@ -134,6 +134,7 @@ export default function ClientPage() {
           <span><strong>Abebe Zeleke</strong><small>International Hotel</small></span>
         </a>
         <nav className="hotel-links" aria-label="Hotel navigation">
+          <a className="active" href="#top">Home</a>
           <a href="#rooms">Stay</a>
           <a href="#experience">Experience</a>
           <a href="#services">Services</a>
