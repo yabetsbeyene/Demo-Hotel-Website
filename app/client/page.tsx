@@ -5,6 +5,7 @@ import { Icon } from '@/components/icon';
 
 const rooms = [
   {
+    slug: 'classic-twin',
     name: 'Classic Twin',
     detail: 'Two beds · 2 guests',
     price: '4,200',
@@ -14,6 +15,7 @@ const rooms = [
     amenities: ['Twin beds', 'Rain shower', 'Breakfast for two']
   },
   {
+    slug: 'executive-king',
     name: 'Executive King',
     detail: 'King bed · City view',
     price: '5,800',
@@ -23,6 +25,7 @@ const rooms = [
     amenities: ['King bed', 'City view', 'Espresso station']
   },
   {
+    slug: 'deluxe-suite',
     name: 'Deluxe Suite',
     detail: 'Lounge · 3 guests',
     price: '6,500',
@@ -32,6 +35,7 @@ const rooms = [
     amenities: ['Separate lounge', 'Soaking tub', 'Airport transfer']
   },
   {
+    slug: 'garden-terrace',
     name: 'Garden Terrace',
     detail: 'Private terrace · 2 guests',
     price: '7,200',
@@ -41,6 +45,7 @@ const rooms = [
     amenities: ['Private terrace', 'King bed', 'Garden access']
   },
   {
+    slug: 'az-residence',
     name: 'AZ Residence',
     detail: 'Two bedrooms · 5 guests',
     price: '11,800',
@@ -50,6 +55,7 @@ const rooms = [
     amenities: ['Two bedrooms', 'Kitchenette', 'Living room']
   },
   {
+    slug: 'presidential-suite',
     name: 'Presidential Suite',
     detail: 'Panoramic view · 4 guests',
     price: '16,500',
@@ -108,10 +114,17 @@ export default function ClientPage() {
   const [roomDetails, setRoomDetails] = useState<typeof rooms[number] | null>(null);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [bookingSubmitting, setBookingSubmitting] = useState(false);
+  const [bookingError, setBookingError] = useState('');
 
-  function handleBooking(event: FormEvent<HTMLFormElement>) {
+  async function handleBooking(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setMessage(`Thank you${firstName ? `, ${firstName}` : ''}. Your ${selectedRoom.name} request is ready. Our concierge will confirm it shortly.`);
+    setBookingSubmitting(true); setBookingError(''); setMessage('');
+    const response = await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ roomTypeSlug: selectedRoom.slug, checkIn, checkOut, guestsCount: Number(adults) + Number(children), guestFullName: `${firstName} ${lastName}`.trim(), guestEmail: email, guestPhone: phone, specialRequests: `${companyName ? `Company: ${companyName}. ` : ''}${specialRequests}` }) });
+    const data = await response.json();
+    if (!response.ok) setBookingError(data.error ?? 'Unable to send your request.');
+    else setMessage(`Thank you${firstName ? `, ${firstName}` : ''}. Your request ${data.booking.confirmation_code} for the ${selectedRoom.name} is with our concierge.`);
+    setBookingSubmitting(false);
   }
 
   function chooseRoom(room: typeof rooms[number]) {
@@ -172,7 +185,7 @@ export default function ClientPage() {
               <label>Company name<input value={companyName} onChange={(event) => setCompanyName(event.target.value)} placeholder="Optional" /></label>
               <label className="booking-request">Special requests<textarea value={specialRequests} onChange={(event) => setSpecialRequests(event.target.value)} placeholder="Tell us anything that would make your stay better" rows={3} /></label>
             </div>
-            <button className="booking-submit" type="submit">Request this stay <Icon name="arrow" size={16} /></button>
+            {bookingError && <p className="form-error" role="alert">{bookingError}</p>}<button className="booking-submit" type="submit" disabled={bookingSubmitting}>{bookingSubmitting ? 'Sending request…' : 'Request this stay'} <Icon name="arrow" size={16} /></button>
           </form>
         </section>}
 

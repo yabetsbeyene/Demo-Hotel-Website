@@ -44,17 +44,22 @@ export async function signIn(email: string, password: string) {
 }
 
 export async function getCurrentAdmin(): Promise<Admin | null> {
-  const token = cookies().get(COOKIE)?.value;
-  if (!token) return null;
-  const result = await query<{ id: string; email: string; full_name: string; role: AdminRole; is_active: boolean }>(
-    `SELECT u.id, u.email, u.full_name, u.role, u.is_active
-       FROM admin_sessions s JOIN admin_users u ON u.id = s.admin_user_id
-      WHERE s.token_hash = $1 AND s.expires_at > now() AND u.is_active = true`, [tokenHash(token)]
-  );
-  const user = result.rows[0];
-  if (!user) { cookies().delete(COOKIE); return null; }
-  await query('UPDATE admin_sessions SET last_seen_at = now() WHERE token_hash = $1', [tokenHash(token)]);
-  return { id: user.id, email: user.email, fullName: user.full_name, role: user.role, isActive: user.is_active };
+  try {
+    const token = cookies().get(COOKIE)?.value;
+    if (!token) return null;
+    const result = await query<{ id: string; email: string; full_name: string; role: AdminRole; is_active: boolean }>(
+      `SELECT u.id, u.email, u.full_name, u.role, u.is_active
+         FROM admin_sessions s JOIN admin_users u ON u.id = s.admin_user_id
+        WHERE s.token_hash = $1 AND s.expires_at > now() AND u.is_active = true`, [tokenHash(token)]
+    );
+    const user = result.rows[0];
+    if (!user) { cookies().delete(COOKIE); return null; }
+    await query('UPDATE admin_sessions SET last_seen_at = now() WHERE token_hash = $1', [tokenHash(token)]);
+    return { id: user.id, email: user.email, fullName: user.full_name, role: user.role, isActive: user.is_active };
+  } catch (error) {
+    if (error instanceof Error && error.message === 'DATABASE_URL is not configured') return null;
+    throw error;
+  }
 }
 
 export async function requireAdmin(role?: AdminRole) {

@@ -12,6 +12,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ admin });
   } catch (error) {
     console.error('admin login failed', error);
-    return NextResponse.json({ error: 'Unable to sign in right now.' }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error && error.message === 'DATABASE_URL is not configured' ? 'Database is not configured. Add DATABASE_URL to .env.local first.' : 'Unable to sign in right now.' }, { status: error instanceof Error && error.message === 'DATABASE_URL is not configured' ? 503 : 500 });
   }
 }
