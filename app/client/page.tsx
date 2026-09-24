@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { Icon } from '@/components/icon';
 
-const rooms = [
+const fallbackRooms = [
   {
     slug: 'classic-twin',
     name: 'Classic Twin',
@@ -66,6 +66,13 @@ const rooms = [
   }
 ];
 
+const initialRooms = fallbackRooms.map((room) => ({
+  ...room,
+  id: room.slug,
+  max_guests: Number(room.detail.match(/\d+/)?.[0] ?? 2),
+  images: [{ id: `${room.slug}-fallback`, image_url: room.image, alt_text: room.name, title: room.name }]
+}));
+
 const galleryPreview = [
   { label: 'Poolside mornings', image: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1000&q=85' },
   { label: 'A table for the evening', image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1000&q=85' },
@@ -100,6 +107,7 @@ const testimonials = [
 ];
 
 export default function ClientPage() {
+  const [rooms, setRooms] = useState(initialRooms);
   const [checkIn, setCheckIn] = useState('2026-10-04');
   const [checkOut, setCheckOut] = useState('2026-10-07');
   const [firstName, setFirstName] = useState('');
@@ -110,12 +118,29 @@ export default function ClientPage() {
   const [children, setChildren] = useState('0');
   const [companyName, setCompanyName] = useState('');
   const [specialRequests, setSpecialRequests] = useState('');
-  const [selectedRoom, setSelectedRoom] = useState(rooms[1]);
+  const [selectedRoom, setSelectedRoom] = useState(initialRooms[1]);
   const [roomDetails, setRoomDetails] = useState<typeof rooms[number] | null>(null);
+  const [activeRoomImage, setActiveRoomImage] = useState(0);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [bookingSubmitting, setBookingSubmitting] = useState(false);
   const [bookingError, setBookingError] = useState('');
+
+  useEffect(() => {
+    fetch('/api/rooms').then(async (response) => {
+      if (!response.ok) return;
+      const data = await response.json();
+      if (!data.rooms?.length) return;
+      setRooms(data.rooms.map((room: typeof initialRooms[number] & { bed_type?: string; max_guests: number; base_price: number; amenities?: string[] }) => ({
+        ...room,
+        detail: `${room.bed_type ?? 'Comfortable room'} · ${room.max_guests} guests`,
+        price: Number(room.base_price).toLocaleString(),
+        image: room.images?.[0]?.image_url ?? '',
+        tag: room.max_guests > 3 ? 'For longer stays' : 'Thoughtful stay',
+        amenities: room.amenities ?? []
+      })));
+    }).catch(() => undefined);
+  }, []);
 
   async function handleBooking(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -129,6 +154,7 @@ export default function ClientPage() {
 
   function chooseRoom(room: typeof rooms[number]) {
     setSelectedRoom(room);
+    setActiveRoomImage(0);
     setRoomDetails(null);
     setBookingOpen(true);
   }
@@ -192,10 +218,10 @@ export default function ClientPage() {
         <section className="hotel-section" id="rooms">
           <div className="section-heading"><div><p className="hotel-eyebrow">Stay your way</p><h2>Rooms with room<br /><em>to breathe.</em></h2></div><p>Every detail is considered for deep rest, easy mornings, and the kind of welcome that stays with you.</p></div>
           <div className="room-cards">
-            {rooms.map((room) => <article className={`stay-card ${selectedRoom.name === room.name ? 'selected' : ''}`} key={room.name}>
-              <button className="stay-image" type="button" onClick={() => setRoomDetails(room)} style={{ backgroundImage: `url(${room.image})` }} aria-label={`View details for ${room.name}`}><span>{room.tag}</span><span className="stay-arrow"><Icon name="arrow" size={17} /></span></button>
+            {rooms.map((room) => <article className={`stay-card ${selectedRoom.name === room.name ? 'selected' : ''}`} key={room.id}>
+              <button className="stay-image" type="button" onClick={() => { setRoomDetails(room); setActiveRoomImage(0); }} style={{ backgroundImage: `url(${room.images[0]?.image_url ?? room.image})` }} aria-label={`View details for ${room.name}`}><span>{room.tag}</span><span className="stay-arrow"><Icon name="arrow" size={17} /></span></button>
               <div className="stay-card-body"><div><h3>{room.name}</h3><p>{room.detail}</p></div><strong><small>from</small> ETB {room.price}<i>/ night</i></strong></div>
-              <button className="stay-select" type="button" onClick={() => setRoomDetails(room)}>View room details <Icon name="arrow" size={14} /></button>
+              <button className="stay-select" type="button" onClick={() => { setRoomDetails(room); setActiveRoomImage(0); }}>View room details <Icon name="arrow" size={14} /></button>
             </article>)}
           </div>
         </section>
@@ -243,8 +269,8 @@ export default function ClientPage() {
       {roomDetails && <div className="room-detail-backdrop" role="presentation" onClick={() => setRoomDetails(null)}>
         <section className="room-detail-panel" role="dialog" aria-modal="true" aria-labelledby="room-detail-title" onClick={(event) => event.stopPropagation()}>
           <button className="room-detail-close" type="button" onClick={() => setRoomDetails(null)} aria-label="Close room details">×</button>
-          <div className="room-detail-image" style={{ backgroundImage: `url(${roomDetails.image})` }} />
-          <div className="room-detail-copy"><p className="hotel-eyebrow">{roomDetails.tag}</p><h2 id="room-detail-title">{roomDetails.name}</h2><p>{roomDetails.description}</p><div className="room-amenities">{roomDetails.amenities.map((amenity) => <span key={amenity}>{amenity}</span>)}</div><div className="room-detail-footer"><strong>ETB {roomDetails.price}<small>/ night</small></strong><button className="booking-submit" type="button" onClick={() => chooseRoom(roomDetails)}>Book now <Icon name="arrow" size={16} /></button></div></div>
+          <div className="room-detail-image" style={{ backgroundImage: `url(${roomDetails.images[activeRoomImage]?.image_url ?? roomDetails.image})` }} />
+          <div className="room-detail-copy"><p className="hotel-eyebrow">{roomDetails.tag}</p><h2 id="room-detail-title">{roomDetails.name}</h2><p>{roomDetails.description}</p><div className="room-detail-gallery">{roomDetails.images.map((image, index) => <button type="button" key={image.id} className={index === activeRoomImage ? 'active' : ''} onClick={() => setActiveRoomImage(index)} aria-label={`View image ${index + 1} of ${roomDetails.name}`} style={{ backgroundImage: `url(${image.image_url})` }} />)}</div><div className="room-amenities">{roomDetails.amenities.map((amenity) => <span key={amenity}>{amenity}</span>)}</div><div className="room-detail-footer"><strong>ETB {roomDetails.price}<small>/ night</small></strong><button className="booking-submit" type="button" onClick={() => chooseRoom(roomDetails)}>Book now <Icon name="arrow" size={16} /></button></div></div>
         </section>
       </div>}
       {message && <button className="booking-toast" type="button" onClick={() => setMessage('')}>{message}<span>×</span></button>}

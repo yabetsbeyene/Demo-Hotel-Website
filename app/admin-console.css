@@ -15,8 +15,29 @@
 .date-filter { display: inline-flex; align-items: center; gap: 6px; color: #778078; font-size: 10px; }
 .date-filter input { padding: 8px 7px; }
 .row-action-select { padding: 6px 8px; font-size: 11px; }
+.row-details-button { margin-right: 8px; border: 0; background: transparent; color: #9a6738; cursor: pointer; font-size: 10px; font-weight: 700; }
 .admin-inline-error { margin: 0 24px 14px; }
+.booking-detail-panel { margin-top: 18px; padding: 22px; border: 1px solid #dcd8cf; background: #fffdf8; }
+.booking-detail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 18px 0; }
+.booking-detail-grid span, .booking-request-copy { display: grid; gap: 5px; color: #536159; font-size: 12px; }
+.booking-detail-grid b, .booking-request-copy b { color: #9a9f96; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+.booking-request-copy { padding-top: 16px; border-top: 1px solid #e4dfd5; }
+.booking-request-copy p { margin: 0; line-height: 1.6; }
+.new-booking-grid { margin-top: 18px; }
+.booking-activity-row { color: inherit; text-decoration: none; }
+.booking-activity-row:hover strong { color: #9a6738; }
 .gallery-upload-panel { margin-bottom: 24px; padding: 18px 22px; }
+.room-create-panel { margin-bottom: 24px; padding: 18px 22px; }
+.room-create-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: end; }
+.room-create-form label { display: grid; gap: 6px; color: #778078; font-size: 10px; }
+.room-create-form input, .room-create-form textarea { width: 100%; padding: 9px; border: 1px solid #dcd8cf; background: #fffdf8; color: #263a32; font: inherit; }
+.room-create-form .room-description-field { grid-column: span 2; }
+.field-hint { color: #9a9f96; font-size: 9px; }
+.room-upload-button { position: relative; display: inline-flex; align-items: center; gap: 6px; color: #9a6738; cursor: pointer; font-size: 10px; }
+.room-upload-button input { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; }
+.room-photo { min-height: 150px; background: linear-gradient(135deg, #d9dfd8, #b7c6b7); background-position: center; background-size: cover; position: relative; }
+.room-photo::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(30,45,37,.05), rgba(30,45,37,.55)); }
+.room-photo span { position: absolute; z-index: 1; right: 12px; bottom: 10px; color: white; font-size: 10px; }
 .gallery-upload-form { display: grid; grid-template-columns: 1.2fr 1.4fr 1fr 1fr auto; align-items: end; gap: 12px; }
 .gallery-upload-form label { display: grid; gap: 6px; color: #778078; font-size: 10px; }
 .gallery-upload-form input, .gallery-upload-form select { min-height: 38px; padding: 8px; border: 1px solid #dcd8cf; background: #fffdf8; color: #263a32; }
@@ -28,8 +49,9 @@
 .live-gallery-card .gallery-visual span { position: absolute; z-index: 1; left: 12px; bottom: 10px; color: white; font-size: 10px; text-transform: capitalize; }
 .gallery-card-footer span { display: grid; gap: 4px; }
 .gallery-card-footer small { color: #899087; font-size: 10px; }
-@media (max-width: 900px) { .gallery-upload-form { grid-template-columns: 1fr 1fr; } .live-gallery-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 900px) { .gallery-upload-form, .room-create-form { grid-template-columns: 1fr 1fr; } .room-create-form .room-description-field { grid-column: span 2; } .live-gallery-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px) { .gallery-upload-form, .live-gallery-grid { grid-template-columns: 1fr; } .admin-search-input { width: 100%; } .date-filter { width: 100%; justify-content: space-between; } }
+@media (max-width: 700px) { .booking-detail-grid { grid-template-columns: 1fr 1fr; } }
 .sidebar {
   width: 250px;
   background: #202521;

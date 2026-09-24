@@ -76,6 +76,22 @@
   gap: 8px;
   margin: 19px 0 29px;
 }
+.room-detail-gallery {
+  display: flex;
+  gap: 8px;
+  margin: 22px 0 8px;
+  overflow-x: auto;
+}
+.room-detail-gallery button {
+  width: 58px;
+  height: 46px;
+  flex: 0 0 auto;
+  border: 2px solid transparent;
+  background-position: center;
+  background-size: cover;
+  cursor: pointer;
+}
+.room-detail-gallery button.active { border-color: var(--hotel-gold); }
 
 .room-amenities span {
   padding: 8px 10px;
